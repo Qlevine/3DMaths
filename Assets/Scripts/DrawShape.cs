@@ -7,17 +7,37 @@ public class DrawShape : MonoBehaviour
     public Vector3[] points;
     public Color[] colors;
 
+    [SerializeField]
+    private bool showCrossProducts;
+
+    [SerializeField]
+    private bool showMagnitudes;
+
+    [SerializeField]
+    private bool showDotProducts;
+
     private void Start()
     {
         drawTriangle = new DrawTriangle(points, colors);
     }
+    [SerializeField]
+    private bool forceUpdate = false;
     private void OnDrawGizmos()
     {
-        DrawMyTriangle();
+        if (forceUpdate)
+        {
+            forceUpdate = false;
+            DrawMyTriangle(true);
+        }
+        else
+        {
+            DrawMyTriangle(false);
+        }
+        
     }
 
     DrawTriangle drawTriangle;
-    private void DrawMyTriangle()
+    private void DrawMyTriangle(bool forceUpdate)
     {
         if(points.Length != 3)
         {
@@ -30,8 +50,13 @@ public class DrawShape : MonoBehaviour
         else
         {
             drawTriangle.lineColors = colors;
-            drawTriangle.DrawTriangleEdges();
+            drawTriangle.DrawTriangleEdges(showCrossProducts,showMagnitudes,showDotProducts,forceUpdate);
+            forceUpdate = false;
         }
-        
+    }
+
+    public void ForceUpdate()
+    {
+        forceUpdate = true;
     }
 }
